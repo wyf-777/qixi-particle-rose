@@ -9,11 +9,7 @@ const loading = document.querySelector(".loading");
 const loadingText = document.querySelector(".loading p");
 const bloomButton = document.querySelector(".bloom");
 const bloomLabel = document.querySelector(".bloom-label");
-const musicButton = document.querySelector(".music");
-const music = document.querySelector("#background-music");
 const assetUrl = (fileName) => `${import.meta.env.BASE_URL}${fileName}`;
-
-music.src = assetUrl("the-rose.mp3");
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x090406, 0.07);
@@ -48,37 +44,6 @@ bloomButton.addEventListener("click", () => {
   isBlooming = !isBlooming;
   bloomLabel.textContent = isBlooming ? "归拢" : "绽放";
 });
-
-music.volume = 0.42;
-
-function updateMusicUI(isPlaying) {
-  musicButton.classList.toggle("playing", isPlaying);
-  musicButton.setAttribute("aria-pressed", String(isPlaying));
-  musicButton.setAttribute("aria-label", isPlaying ? "暂停背景音乐" : "播放背景音乐");
-}
-
-async function playMusic() {
-  try {
-    await music.play();
-    updateMusicUI(true);
-  } catch {
-    updateMusicUI(false);
-  }
-}
-
-musicButton.addEventListener("click", async () => {
-  if (music.paused) await playMusic();
-  else {
-    music.pause();
-    updateMusicUI(false);
-  }
-});
-
-// 有声自动播放若被浏览器拦截，则在第一次用户交互时启动。
-playMusic();
-addEventListener("pointerdown", (event) => {
-  if (!event.target.closest?.(".music") && music.paused) playMusic();
-}, { once: true });
 
 new GLTFLoader().load(
   assetUrl("rose-model.glb"),
